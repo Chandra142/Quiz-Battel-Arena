@@ -1,0 +1,13 @@
+{
+  "name": "quiz-battle-arena",
+  "version": "1.0.0",
+  "description": "Quiz Battle Arena - Real-Time Multiplayer Quiz Game",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "server": "npm --prefix server run dev",
+    "client": "npm --prefix client run dev"
+  },
+  "keywords": ["multiplayer", "quiz", "game", "socket.io", "react", "typescript"],
+  "author": "",
+  "license": "MIT"
+}
