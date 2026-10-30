@@ -17,6 +17,8 @@ interface SocketContextValue {
   leaderboard: LeaderboardEntry[];
   winner: LeaderboardEntry | null;
   selectedOption: number | null;
+  serverUrl: string;
+  updateServerUrl: (url: string) => void;
   createRoom: (nickname: string, avatarSeed?: number) => void;
   joinRoom: (roomCode: string, nickname: string, avatarSeed?: number) => void;
   updateSettings: (settings: Partial<GameSettings>) => void;
@@ -29,8 +31,21 @@ interface SocketContextValue {
 
 const SocketContext = createContext<SocketContextValue | undefined>(undefined);
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || 
-  (typeof window !== 'undefined' ? `${window.location.protocol}//${window.location.hostname}:3001` : 'http://localhost:3001');
+export const getStoredServerUrl = (): string => {
+  if (typeof window !== 'undefined') {
+    const custom = localStorage.getItem('qba_server_url');
+    if (custom) return custom.trim();
+  }
+  if (import.meta.env.VITE_SERVER_URL) {
+    return import.meta.env.VITE_SERVER_URL.trim();
+  }
+  if (typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `${window.location.protocol}//${window.location.hostname}:3001`;
+    }
+  }
+  return '';
+};
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
@@ -44,6 +59,20 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [winner, setWinner] = useState<LeaderboardEntry | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
+
+  const [serverUrl, setServerUrl] = useState<string>(() => getStoredServerUrl());
+
+  const updateServerUrl = useCallback((newUrl: string) => {
+    const clean = newUrl.trim().replace(/\/+$/, ''); // Remove trailing slashes
+    if (typeof window !== 'undefined') {
+      if (clean) {
+        localStorage.setItem('qba_server_url', clean);
+      } else {
+        localStorage.removeItem('qba_server_url');
+      }
+    }
+    setServerUrl(clean || getStoredServerUrl());
+  }, []);
 
   // Persistent Player ID
   const [myPlayerId] = useState<string>(() => {
@@ -60,7 +89,12 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const s = io(SERVER_URL, {
+    if (!serverUrl) {
+      setIsConnected(false);
+      return;
+    }
+
+    const s = io(serverUrl, {
       transports: ['websocket', 'polling'],
       reconnectionAttempts: 10,
       reconnectionDelay: 1000
@@ -179,7 +213,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     return () => {
       s.disconnect();
     };
-  }, [myPlayerId]);
+  }, [serverUrl, myPlayerId]);
 
   const clearError = useCallback(() => {
     setError(null);
@@ -273,6 +307,8 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         leaderboard,
         winner,
         selectedOption,
+        serverUrl,
+        updateServerUrl,
         createRoom,
         joinRoom,
         updateSettings,
