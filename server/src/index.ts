@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import cors from 'cors';
@@ -34,7 +34,7 @@ const roomManager = new RoomManager(io);
 setupSocketHandlers(io, roomManager);
 
 // Health check & API info
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'online',
     app: 'Quiz Battle Arena Server',
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.status(200).send('OK');
 });
 
