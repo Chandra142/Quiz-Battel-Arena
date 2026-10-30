@@ -1,186 +1,321 @@
 <div align="center">
 
-![Quiz Battle Arena Preview Banner](./banner.jpg)
+![Quiz Battle Arena Banner](./banner.jpg)
 
-# ⚔️ QUIZ BATTLE ARENA
+# ⚔️ Quiz Battle Arena
 
-> **"Think Fast. Answer Faster. Become the Champion."**
+### High-Performance, Real-Time Multiplayer Trivia Engine
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-quiz--battel--arena.vercel.app-00f0ff?style=for-the-badge&logo=vercel&logoColor=white)](https://quiz-battel-arena.vercel.app/)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-quiz--battel--arena.vercel.app-00f0ff?style=for-the-badge&logo=vercel&logoColor=white)](https://quiz-battel-arena.vercel.app/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-8b5cf6?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Chandra142/Quiz-Battel-Arena)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
-[![React 19](https://img.shields.io/badge/React%2019-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![React 19](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript 5.7](https://img.shields.io/badge/TypeScript_5.7-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO_4.8-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS_v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Vite 6](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+
+<p align="center">
+  <b>Think Fast. Answer Faster. Become the Champion.</b><br>
+  A production-grade, low-latency multiplayer quiz game where players host private rooms, share instant invite codes, and battle head-to-head with synchronized timers, server-authoritative scoring, and procedural audio.
+</p>
+
+[Live Demo](https://quiz-battel-arena.vercel.app/) • [Architecture](#-system-architecture) • [Features](#-features) • [Getting Started](#-getting-started) • [Deployment](#-deployment) • [API Contract](#-real-time-event-contract)
 
 </div>
 
-Quiz Battle Arena is a production-ready, real-time multiplayer competitive quiz game built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, **Node.js**, **Express**, and **Socket.IO**.
+---
 
-Players can create private rooms, share invitation codes/links, compete head-to-head on desktop and mobile, and experience instantaneous server-synchronized trivia battles with zero registration or installation required.
+## 📑 Table of Contents
+- [System Architecture](#-system-architecture)
+- [Key Engineering Highlights](#-key-engineering-highlights)
+- [Features](#-features)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Environment Configuration](#-environment-configuration)
+- [Testing & Quality Assurance](#-testing--quality-assurance)
+- [Real-Time Event Contract](#-real-time-event-contract)
+- [Deployment Guide](#-deployment-guide)
+- [License](#-license)
 
 ---
 
-## 🌟 Key Features
+## 🏛 System Architecture
 
-### 🎮 Real-Time Multiplayer Gameplay
-- **Authoritative Server Architecture**: The Node.js server controls timers, delivers questions, scores answers, and manages room lifecycles. Zero client-side cheating or score manipulation.
-- **Instant Room Creation**: Generates unique, memorable 6-character room codes (e.g. `ARENA9`, `CYBER7`).
-- **Shareable Invite Links**: One-click URL copying (`?room=XYZ123`) that auto-fills room codes for seamless onboarding.
-- **Customizable Host Settings**: The room host configures question counts (5, 10, 15), timer duration (10s, 15s, 20s), difficulty (Easy, Medium, Hard, All), and topics.
-- **Dynamic Scoring Engine**:
-  - Base points: **500 points** for correct answers.
-  - Speed bonus: Up to **500 bonus points** based on elapsed server timestamp.
-  - Consecutive streak multiplier: Up to **200 bonus streak points**.
-  - Incorrect or unanswered: **0 points**.
-- **Synchronized Visual HUD**: Circular SVG countdown rings, progress indicators, locked-answer badges, and real-time choice reveals.
-- **Live Leaderboard & Standings**: Animated position changes, round points diffs (`+850 PTS`), and streak badges.
-- **3D Animated Podium**: Celebrates 1st, 2nd, and 3rd place with gold/silver/bronze crowns, medals, and a confetti explosion.
-- **Instant Rematch ("Play Again")**: Host can restart new rounds with the same players in the lobby without re-entering codes.
-- **Procedural Web Audio Engine**: Zero-latency synthesized sound effects for countdown ticks, answer locks, victory chimes, and wrong answer buzzers via Web Audio API.
+The application implements an **authoritative server model**. The client acts as a reactive presentation layer, while all game state transitions, timer broadcasts, answer validations, and speed bonus calculations are strictly computed on the server.
 
-### 📚 120+ Curated Questions Question Bank
-Questions are organized into 6 distinct categories across Easy, Medium, and Hard difficulties:
-1. **General Knowledge**
-2. **Science** (Physics, Biology, Chemistry, Astronomy)
-3. **Technology** (Computing, Web, Networks, Programming, Cryptography, AI)
-4. **Sports** (Olympics, Football/Soccer, Basketball, Formula 1, Tennis)
-5. **History** (Ancient Empires, Revolutions, World Wars, Renowned Figures)
-6. **Geography** (Capitals, Wonders, Continents, Natural Landmarks)
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Host as Player 1 (Host)
+    actor Challenger as Player 2 (Challenger)
+    participant Server as Node.js Socket.IO Server
+
+    Host->>Server: create_room { nickname, avatarSeed }
+    Server-->>Host: room_created { roomCode: "28J57X" }
+    
+    Challenger->>Server: join_room { roomCode: "28J57X", nickname }
+    Server-->>Host: player_joined { challenger }
+    Server-->>Challenger: joined_room_success { roomState }
+
+    Host->>Server: start_game { roomCode }
+    Server-->>Host: countdown_tick { 3..2..1 }
+    Server-->>Challenger: countdown_tick { 3..2..1 }
+
+    rect rgb(20, 16, 40)
+        Note over Server,Challenger: Active Round (Answers hidden from payloads)
+        Server-->>Host: new_question { questionData (no correctAnswer), timer: 15s }
+        Server-->>Challenger: new_question { questionData (no correctAnswer), timer: 15s }
+        
+        Host->>Server: submit_answer { optionIndex: 2 }
+        Server-->>Host: player_answered { locked: true }
+        
+        Challenger->>Server: submit_answer { optionIndex: 1 }
+        Server-->>Challenger: player_answered { locked: true }
+    end
+
+    Note over Server: All players locked in early -> trigger instant reveal
+    Server-->>Host: reveal_answer { correctAnswer, explanation, scores, leaderboard }
+    Server-->>Challenger: reveal_answer { correctAnswer, explanation, scores, leaderboard }
+```
+
+### Why Authoritative State?
+1. **Zero Client Tampering**: Clients never receive the `correctAnswer` index during the question phase. DevTools inspection cannot reveal the answer.
+2. **Server-Side Elapsed Time Scoring**: Speed bonuses are derived from server timestamps (`Date.now() - questionStartTime`), eliminating client clock skew or latency exploitation.
+3. **Simultaneous Lifecycle Synchronization**: All connected peers see the same countdown ticks and question reveals simultaneously.
 
 ---
 
-## 🛠️ Technology Stack
+## ⚡ Key Engineering Highlights
 
-| Layer | Technology |
-|---|---|
-| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS v4, Lucide React, Canvas Confetti |
-| **Backend** | Node.js, Express.js, Socket.IO 4.8 |
-| **Real-time Protocol** | WebSockets + Long-polling fallback via Socket.IO |
-| **Audio** | Custom Web Audio API Synthesizer (Zero asset download failure) |
-| **Deployment Targets** | Frontend: Vercel / Netlify \| Backend: Render / Railway / Fly.io |
+### 1. Dynamic Scoring Engine
+$$\text{Score} = \text{Base (500 pts)} + \text{Speed Bonus (up to 500 pts)} + \text{Streak Bonus (up to 200 pts)}$$
+- **Speed Bonus Formula**:
+  $$\text{Bonus} = \text{round}\left(500 \times \frac{\text{Remaining Time (ms)}}{\text{Total Question Duration (ms)}}\right)$$
+- **Streak Multiplier**: Consecutive correct answers accumulate streak bonuses ($+50\text{ pts}$ per level, capped at $200\text{ pts}$). An incorrect answer immediately resets the streak to 0.
+
+### 2. Procedural Web Audio API Synthesizer
+Rather than relying on external `.mp3` or `.wav` assets that can suffer from 404s, CORS rejections, or loading latencies, the game incorporates an in-browser audio synthesis engine (`client/src/services/soundManager.ts`):
+- **Click**: Short sine-wave transient ($600\text{ Hz} \to 800\text{ Hz}$).
+- **Select / Lock**: Triangle-wave confirmation chord ($440\text{ Hz} \to 660\text{ Hz}$).
+- **Clock Tick**: Sharp harmonic pulse ($520\text{ Hz}$ normal / $880\text{ Hz}$ urgent).
+- **Correct**: Rising major 7th arpeggio ($C_5, E_5, G_5, C_6$).
+- **Incorrect**: Descending discordant sawtooth buzz ($160\text{ Hz} \to 110\text{ Hz}$).
+- **Victory**: Multiphonic major fanfare chord.
+
+### 3. Automatic Room Lifecycle & Garbage Collection
+- Alphanumeric 6-character room codes generated from a collision-resistant character set (`23456789ABCDEFGHJKLMNPQRSTUVWXYZ`), avoiding confusing characters (`0/O`, `1/I`).
+- Abandoned or inactive rooms are automatically garbage-collected after **45 minutes** of inactivity to conserve server memory.
 
 ---
 
-## 🚀 Quick Start & Local Development
+## 🌟 Features
+
+- **Instant Lobby Creation**: Create private rooms and share 6-character codes or one-click invite URLs (`/?room=28J57X`).
+- **Zero Authentication**: Pick an avatar, choose a callsign, and start playing immediately. Player identities persist in `localStorage`.
+- **Configurable Match Rules**: Hosts can customize question counts (5, 10, 15), timer per question (10s, 15s, 20s), difficulty (Easy, Medium, Hard, All), and categories.
+- **120-Question Curated Bank**: Questions across General Knowledge, Science, Technology, Sports, History, and Geography.
+- **Live Leaderboard & Position Tracking**: Animated position shifts ($\blacktriangle$, $\blacktriangledown$, $-$) and real-time round point differentials ($+850\text{ PTS}$).
+- **3D Animated Victory Podium**: Celebrating 1st, 2nd, and 3rd place with crowns, medals, and a full-screen canvas confetti explosion.
+- **Instant Rematch ("Play Again")**: Hosts can restart new matches with the existing lobby roster without re-entering codes.
+- **Dynamic Backend Server Selector**: In-app modal allowing players on Vercel to connect or switch backend server URLs seamlessly.
+
+---
+
+## 📁 Project Structure
+
+```
+Quiz Battle Arena/
+├── package.json                   # Root orchestrator scripts
+├── README.md                      # Production engineering documentation
+├── ARCHITECTURE.md                # System design & protocol specification
+├── banner.jpg                     # High-res GitHub preview banner
+│
+├── server/                        # Node.js + Express + Socket.IO Backend
+│   ├── package.json
+│   ├── tsconfig.json              # Strict NodeNext configuration
+│   ├── src/
+│   │   ├── index.ts               # HTTP server & WebSocket bootstrap
+│   │   ├── game/
+│   │   │   ├── GameRoom.ts        # Room state machine, timer loops, scoring
+│   │   │   └── RoomManager.ts     # Room lifecycle & memory cleanup
+│   │   ├── questions/
+│   │   │   └── questionBank.ts    # 120 curated questions & selector
+│   │   ├── socket/
+│   │   │   └── socketHandler.ts   # Typed Socket.IO event controllers
+│   │   └── types/
+│   │       └── index.ts           # Authoritative server contracts
+│
+└── client/                        # React 19 + TypeScript + Vite Frontend
+    ├── package.json
+    ├── vite.config.ts             # Vite configuration with Tailwind CSS v4
+    ├── index.html                 # SEO tags, Outfit fonts & SVG favicon
+    ├── src/
+    │   ├── App.tsx                # Dynamic game phase router
+    │   ├── index.css              # Dark theme tokens, glassmorphic utilities
+    │   ├── context/
+    │   │   └── SocketContext.tsx  # Socket client provider & persistent identity
+    │   ├── components/
+    │   │   ├── Avatar.tsx         # 8 procedural gamer avatars & badges
+    │   │   ├── Navbar.tsx         # Connection status, audio toggle & room badge
+    │   │   ├── TimerBar.tsx       # Animated circular & linear SVG timer
+    │   │   ├── QuestionCard.tsx   # Interactive options, locked & reveal states
+    │   │   ├── Leaderboard.tsx    # Live rankings with delta indicators
+    │   │   ├── Podium.tsx         # 3D podium, confetti & rematch controls
+    │   │   └── ServerConfigModal.tsx # Dynamic backend URL switcher
+    │   ├── pages/
+    │   │   ├── LandingPage.tsx    # Hero, avatar picker & room forms
+    │   │   ├── LobbyPage.tsx      # Roster, host controls & share links
+    │   │   ├── GamePage.tsx       # Active HUD, question view & leaderboard
+    │   │   └── ResultsPage.tsx    # Final scoreboard wrapper
+    │   ├── services/
+    │   │   └── soundManager.ts    # Web Audio API sound synthesizer
+    │   ├── test-flow.js           # Headless multi-client integration test
+    │   └── test-edge-cases.js     # Security & validation test suite
+```
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher, tested on v20+)
-- npm (v9 or higher)
+- **Node.js**: v18.0.0 or higher (v20+ recommended)
+- **npm**: v9.0.0 or higher
 
-### 1. Clone & Install Dependencies
+### 1. Clone the Repository
 ```bash
-# Clone the repository
-git clone <your-repo-url>
-cd "Quiz Arena"
+git clone https://github.com/Chandra142/Quiz-Battel-Arena.git
+cd Quiz-Battel-Arena
+```
 
-# Install server and client dependencies
+### 2. Install Dependencies
+```bash
+# Install root, backend, and frontend dependencies
 npm run install:all
 ```
 
-Or install individually:
+### 3. Configure Environment Variables
+Copy the example environment files:
+
 ```bash
-cd server && npm install
-cd ../client && npm install
+# Backend
+cp server/.env.example server/.env
+
+# Frontend
+cp client/.env.example client/.env
 ```
 
-### 2. Environment Configuration
-Create `.env` in `server/` and `client/` using the provided templates:
-
-**Server** (`server/.env`):
-```env
-PORT=3001
-NODE_ENV=development
-CLIENT_URL=http://localhost:5173
-```
-
-**Client** (`client/.env`):
-```env
-VITE_SERVER_URL=http://localhost:3001
-```
-
-### 3. Launch Development Servers
+### 4. Run Development Servers
 Open two terminal windows:
 
-**Terminal 1 (Backend Server)**:
 ```bash
-cd server
-npm run dev
-# Server will listen on http://localhost:3001
+# Terminal 1: Backend Server (Port 3001)
+npm run server
+
+# Terminal 2: Frontend Client (Port 5173)
+npm run client
 ```
 
-**Terminal 2 (Frontend Client)**:
+Navigate to `http://localhost:5173` to play!
+
+---
+
+## ⚙️ Environment Configuration
+
+### Backend (`server/.env`)
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3001` | Port on which the Express & Socket.IO server listens |
+| `NODE_ENV` | `development` | Runtime environment (`development` / `production`) |
+| `CLIENT_URL` | `http://localhost:5173` | Allowed CORS origin for client WebSocket connections |
+
+### Frontend (`client/.env`)
+| Variable | Default | Description |
+|---|---|---|
+| `VITE_SERVER_URL` | `http://localhost:3001` | Target Node.js backend URL for Socket.IO |
+
+---
+
+## 🧪 Testing & Quality Assurance
+
+The codebase includes automated end-to-end integration tests that simulate multiple players competing over real WebSocket connections:
+
 ```bash
-cd client
-npm run dev
-# Vite will launch on http://localhost:5173
+# Run headless multiplayer end-to-end flow test
+node client/test-flow.js
+
+# Run security, permission & edge-case test suite
+node client/test-edge-cases.js
 ```
 
-Now open [http://localhost:5173](http://localhost:5173) in your browser!
-
-To test multiplayer locally:
-1. Open [http://localhost:5173](http://localhost:5173) in regular browser (Player 1 - Host).
-2. Click **Create Room**, pick an avatar, and enter your nickname.
-3. Copy the 6-character room code.
-4. Open an Incognito/Private window or another browser (Player 2 - Challenger).
-5. Enter the room code and join. Both players will appear instantly in the lobby!
-6. Click **Start Game Now** on the Host screen to begin the live battle!
-
----
-
-## 🌐 Deployment Guide
-
-### Deploying the Backend (e.g. Render)
-1. Push your code to GitHub.
-2. In [Render](https://render.com), create a new **Web Service**.
-3. Connect your GitHub repository.
-4. Set the **Root Directory** to `server`.
-5. Set:
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-6. Add Environment Variables:
-   - `PORT=3001`
-   - `NODE_ENV=production`
-7. Copy your deployed Render URL (e.g., `https://quiz-battle-arena-server.onrender.com`).
-
-### Deploying the Frontend (e.g. Vercel)
-1. In [Vercel](https://vercel.com), import your repository.
-2. Set the **Root Directory** to `client`.
-3. Set Framework Preset to **Vite**.
-4. In **Environment Variables**, set:
-   - `VITE_SERVER_URL` = Your backend Render URL (e.g., `https://quiz-battle-arena-server.onrender.com`).
-5. Click **Deploy**. Your multiplayer game will be live globally!
+### Test Coverage Checklist:
+- [x] Host room creation and 6-character code generation.
+- [x] Challenger joining and duplicate nickname rejection.
+- [x] Minimum 2-player game start enforcement.
+- [x] Non-host permission rejection (only host can update settings or start).
+- [x] Correct answer omission from question payload during active round.
+- [x] Simultaneous answer submissions and double-submission locking.
+- [x] Authoritative speed bonus and streak score calculation.
+- [x] Early reveal trigger when all active players submit answers.
+- [x] Disconnection and host reassignment handling.
 
 ---
 
-## 🔌 Socket.IO Event Contract
+## 🔌 Real-Time Event Contract
 
-| Event | Direction | Payload | Description |
-|---|---|---|---|
-| `create_room` | Client ➔ Server | `{ playerId, nickname, avatarSeed }` | Creates a new game room |
-| `join_room` | Client ➔ Server | `{ roomCode, playerId, nickname, avatarSeed }` | Joins an existing room |
-| `update_settings` | Client ➔ Server | `{ roomCode, playerId, settings }` | Host updates question count/timer/topic |
-| `start_game` | Client ➔ Server | `{ roomCode, playerId }` | Host triggers starting 3s countdown |
-| `new_question` | Server ➔ Room | `{ question, timerSeconds }` | Dispatches synchronized question without answer |
-| `submit_answer` | Client ➔ Server | `{ roomCode, playerId, optionIndex }` | Locks player choice; server calculates speed bonus |
-| `timer_update` | Server ➔ Room | `{ timerRemaining }` | Broadcasts 1-second server countdown ticks |
-| `reveal_answer` | Server ➔ Room | `{ reveal, leaderboard }` | Reveals correct answer and points earned |
-| `game_finished` | Server ➔ Room | `{ leaderboard, winner }` | Concludes match and triggers podium screen |
-| `play_again` | Client ➔ Server | `{ roomCode, playerId }` | Host resets match to lobby with current roster |
+All client-server communication occurs via typed Socket.IO events:
+
+| Event | Source | Direction | Payload Structure | Description |
+|---|---|---|---|---|
+| `create_room` | Client | $\to$ Server | `{ playerId, nickname, avatarSeed }` | Initializes a new room; sets player as host |
+| `join_room` | Client | $\to$ Server | `{ roomCode, playerId, nickname, avatarSeed }` | Joins existing room; validates duplicate names |
+| `room_created` | Server | $\to$ Client | `{ roomCode, player, roomState }` | Confirms room creation |
+| `joined_room_success` | Server | $\to$ Client | `{ roomCode, player, roomState }` | Confirms room entry |
+| `update_settings` | Client | $\to$ Server | `{ roomCode, playerId, settings }` | Host updates question count, timer, or topic |
+| `start_game` | Client | $\to$ Server | `{ roomCode, playerId }` | Host starts 3-second countdown |
+| `countdown_tick` | Server | $\to$ Room | `{ count }` | 1-second countdown tick |
+| `new_question` | Server | $\to$ Room | `{ question, timerSeconds }` | Dispatches question without answer index |
+| `submit_answer` | Client | $\to$ Server | `{ roomCode, playerId, optionIndex }` | Locks choice; calculates speed bonus |
+| `player_answered` | Server | $\to$ Room | `{ playerId, hasAnswered }` | Broadcasts locked status to peers |
+| `timer_update` | Server | $\to$ Room | `{ timerRemaining }` | Broadcasts remaining round seconds |
+| `reveal_answer` | Server | $\to$ Room | `{ reveal, leaderboard }` | Reveals answer, point gains, and standings |
+| `game_finished` | Server | $\to$ Room | `{ leaderboard, winner }` | Match concluded; displays podium |
+| `play_again` | Client | $\to$ Server | `{ roomCode, playerId }` | Host resets match to lobby with current roster |
 
 ---
 
-## 🛡️ Security & Reliability
-- **Strict Server Authoritative Scoring**: Answers and speed calculations are validated exclusively on the backend.
-- **Omission of Correct Answers**: The server strips the `correctAnswer` index from payloads until the question's reveal phase.
-- **Double Submission Prevention**: Once a player locks an answer, further submissions for that round are rejected.
-- **Automatic Inactivity Cleanup**: Abandoned rooms are automatically garbage-collected after 45 minutes of inactivity.
+## 🚢 Deployment Guide
+
+### Deploying Backend (Render)
+1. In [Render](https://render.com), create a new **Web Service**.
+2. Connect your GitHub repository: `Chandra142/Quiz-Battel-Arena`.
+3. Set **Root Directory** to: `server`.
+4. Set **Build Command**:
+   ```bash
+   npm install --include=dev && npm run build
+   ```
+   > *Note: `--include=dev` guarantees TypeScript and `@types/express` are installed during the build phase even when `NODE_ENV=production` is enabled.*
+5. Set **Start Command**:
+   ```bash
+   npm start
+   ```
+6. Add Environment Variable:
+   - `PORT` = `3001`
+   - `NODE_ENV` = `production`
+7. Copy your deployed service URL (e.g., `https://quiz-battel-arena-server.onrender.com`).
+
+### Deploying Frontend (Vercel)
+1. In [Vercel](https://vercel.com), import repository `Chandra142/Quiz-Battel-Arena`.
+2. Set **Root Directory** to: `client`.
+3. Set **Framework Preset**: `Vite`.
+4. Add Environment Variable:
+   - `VITE_SERVER_URL` = Your backend Render URL (e.g. `https://quiz-battel-arena-server.onrender.com`).
+5. Click **Deploy**.
 
 ---
 
 ## 📄 License
-MIT License. Built for real-time multiplayer gaming challenges.
+
+This project is licensed under the [MIT License](LICENSE). Built for high-performance real-time multiplayer challenges.
