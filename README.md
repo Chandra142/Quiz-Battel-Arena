@@ -1,6 +1,23 @@
+<div align="center">
+
+![Quiz Battle Arena Preview Banner](./banner.jpg)
+
 # ⚔️ QUIZ BATTLE ARENA
 
 > **"Think Fast. Answer Faster. Become the Champion."**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-quiz--battel--arena.vercel.app-00f0ff?style=for-the-badge&logo=vercel&logoColor=white)](https://quiz-battel-arena.vercel.app/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-8b5cf6?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Chandra142/Quiz-Battel-Arena)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+[![React 19](https://img.shields.io/badge/React%2019-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=flat-square&logo=socket.io&logoColor=white)](https://socket.io/)
+
+</div>
 
 Quiz Battle Arena is a production-ready, real-time multiplayer competitive quiz game built with **React**, **TypeScript**, **Vite**, **Tailwind CSS**, **Node.js**, **Express**, and **Socket.IO**.
 
