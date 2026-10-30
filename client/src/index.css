@@ -5,8 +5,20 @@
   color-scheme: dark;
 }
 
-body {
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  zoom: 1;
+}
+
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
   background-color: #0a0815;
   background-image: 
     radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
@@ -14,12 +26,15 @@ body {
     radial-gradient(at 50% 100%, rgba(236, 72, 153, 0.12) 0px, transparent 50%);
   background-attachment: fixed;
   min-height: 100vh;
-  overflow-x: hidden;
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
 }
 
-/* Glassmorphism helpers */
+/* Glassmorphism helpers with mobile-friendly blur & border */
 .glass-panel {
-  background: rgba(18, 14, 33, 0.75);
+  background: rgba(18, 14, 33, 0.78);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -27,7 +42,7 @@ body {
 }
 
 .glass-card {
-  background: rgba(26, 21, 48, 0.65);
+  background: rgba(26, 21, 48, 0.68);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -36,6 +51,7 @@ body {
 .glass-card-interactive {
   background: rgba(28, 22, 53, 0.7);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.09);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -65,10 +81,10 @@ body {
   box-shadow: 0 0 30px -5px rgba(234, 179, 8, 0.6);
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars & no-scrollbar utility */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -84,10 +100,19 @@ body {
   background: rgba(168, 85, 247, 0.7);
 }
 
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Animations */
 @keyframes pulse-subtle {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.03); }
+  50% { opacity: 0.88; transform: scale(1.02); }
 }
 
 .animate-pulse-subtle {
